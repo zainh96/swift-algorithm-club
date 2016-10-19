@@ -19,7 +19,7 @@ Assume you're given an array of *n* numbers and you need to put them in the righ
 
 Let's say the numbers to sort are `[2, 1, 5, 4, 9]`. This is your unsorted pile. The goal is to keep splitting the pile until you can't split anymore. 
 
-First, split the array into two halves: `[2, 1,]` and `[5, 4, 9]`. Can you keep splitting them? Yes you can!
+First, split the array into two halves: `[2, 1]` and `[5, 4, 9]`. Can you keep splitting them? Yes you can!
 
 Focus on the left pile. `[2, 1]` will split into `[2]` and `[1]`. Can you keep splitting them? No. Time to check the other pile.
 
@@ -42,7 +42,7 @@ You're left with only two piles and `[9]` finally gets its chance to merge, resu
 Here's what merge sort may look like in Swift:
 
 ```swift
-func mergeSort(array: [Int]) -> [Int] {
+func mergeSort(_ array: [Int]) -> [Int] {
   guard array.count > 1 else { return array }    // 1
 
   let middleIndex = array.count / 2              // 2
@@ -70,7 +70,7 @@ A step-by-step explanation of how the code works:
 Here's the merging algorithm:
 
 ```swift
-func merge(leftPile leftPile: [Int], rightPile: [Int]) -> [Int] {
+func merge(leftPile: [Int], rightPile: [Int]) -> [Int] {
   // 1
   var leftIndex = 0
   var rightIndex = 0
@@ -162,7 +162,7 @@ The implementation of merge sort you've seen so far is called "top-down" because
 Time to step up the game a little. :-) Here is a complete bottom-up implementation in Swift:
 
 ```swift
-func mergeSortBottomUp<T>(a: [T], _ isOrderedBefore: (T, T) -> Bool) -> [T] {
+func mergeSortBottomUp<T>(_ a: [T], _ isOrderedBefore: (T, T) -> Bool) -> [T] {
   let n = a.count
 
   var z = [a, a]      // 1

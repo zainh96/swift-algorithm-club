@@ -24,6 +24,29 @@ func select<T>(from a: [T], count k: Int) -> [T] {
 }
 
 /*
+  Pick k random elements from an array. Performance: O(n).
+*/
+func reservoirSample<T>(from a: [T], count k: Int) -> [T] {
+  precondition(a.count >= k)
+
+  var result = [T]()
+
+  // Fill the result array with first k elements.
+  for i in 0..<k {
+    result.append(a[i])
+  }
+
+  // Randomly replace elements from remaining pool.
+  for i in k..<a.count {
+    let j = random(min: 0, max: i)
+    if j < k {
+      result[j] = a[i]
+    }
+  }
+  return result
+}
+
+/*
   Selects `count` items at random from an array. Respects the original order of
   the elements. Performance: O(n).
 
@@ -36,13 +59,13 @@ func select<T>(from a: [T], count requested: Int) -> [T] {
   var examined = 0
   var selected = 0
   var b = [T]()
-  
+
   while selected < requested {
     examined += 1
-    
+
     // Calculate random variable 0.0 <= r < 1.0 (exclusive!).
     let r = Double(arc4random()) / 0x100000000
-    
+
     let leftToExamine = a.count - examined + 1
     let leftToAdd = requested - selected
 

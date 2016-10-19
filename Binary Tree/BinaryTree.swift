@@ -6,7 +6,7 @@
 public indirect enum BinaryTree<T> {
   case Node(BinaryTree<T>, T, BinaryTree<T>)
   case Empty
-  
+
   public var count: Int {
     switch self {
     case let .Node(left, _, right):
@@ -36,7 +36,7 @@ extension BinaryTree {
       right.traverseInOrder(process)
     }
   }
-  
+
   public func traversePreOrder(@noescape process: T -> Void) {
     if case let .Node(left, value, right) = self {
       process(value)
@@ -44,12 +44,22 @@ extension BinaryTree {
       right.traversePreOrder(process)
     }
   }
-  
+
   public func traversePostOrder(@noescape process: T -> Void) {
     if case let .Node(left, value, right) = self {
       left.traversePostOrder(process)
       right.traversePostOrder(process)
       process(value)
+    }
+  }
+}
+
+extension BinaryTree {
+  func invert() -> BinaryTree {
+    if case let .Node(left, value, right) = self {
+      return .Node(right.invert(), value, left.invert())
+    } else {
+      return .Empty
     }
   }
 }

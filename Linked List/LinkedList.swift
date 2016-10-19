@@ -1,12 +1,7 @@
-/*
-  Doubly-linked list
-
-  Most operations on the linked list have complexity O(n).
-*/
 public class LinkedListNode<T> {
   var value: T
   var next: LinkedListNode?
-  var previous: LinkedListNode?
+  weak var previous: LinkedListNode?
   
   public init(value: T) {
     self.value = value
@@ -16,8 +11,10 @@ public class LinkedListNode<T> {
 public class LinkedList<T> {
   public typealias Node = LinkedListNode<T>
   
-  private var head: Node?
-  
+  fileprivate var head: Node?
+    
+  public init() {}
+    
   public var isEmpty: Bool {
     return head == nil
   }
@@ -50,7 +47,7 @@ public class LinkedList<T> {
     }
   }
   
-  public func nodeAtIndex(index: Int) -> Node? {
+  public func node(atIndex index: Int) -> Node? {
     if index >= 0 {
       var node = head
       var i = index
@@ -64,12 +61,12 @@ public class LinkedList<T> {
   }
   
   public subscript(index: Int) -> T {
-    let node = nodeAtIndex(index)
+    let node = self.node(atIndex: index)
     assert(node != nil)
     return node!.value
   }
   
-  public func append(value: T) {
+  public func append(_ value: T) {
     let newNode = Node(value: value)
     if let lastNode = last {
       newNode.previous = lastNode
@@ -96,8 +93,8 @@ public class LinkedList<T> {
     return (prev, next)
   }
   
-  public func insert(value: T, atIndex index: Int) {
-    let (prev, next) = nodesBeforeAndAfter(index)
+  public func insert(_ value: T, atIndex index: Int) {
+    let (prev, next) = nodesBeforeAndAfter(index: index)
     
     let newNode = Node(value: value)
     newNode.previous = prev
@@ -114,7 +111,7 @@ public class LinkedList<T> {
     head = nil
   }
   
-  public func removeNode(node: Node) -> T {
+  public func remove(node: Node) -> T {
     let prev = node.previous
     let next = node.next
     
@@ -132,13 +129,13 @@ public class LinkedList<T> {
   
   public func removeLast() -> T {
     assert(!isEmpty)
-    return removeNode(last!)
+    return remove(node: last!)
   }
   
-  public func removeAtIndex(index: Int) -> T {
-    let node = nodeAtIndex(index)
+  public func remove(atIndex index: Int) -> T {
+    let node = self.node(atIndex: index)
     assert(node != nil)
-    return removeNode(node!)
+    return remove(node: node!)
   }
 }
 
@@ -159,15 +156,15 @@ extension LinkedList {
   public func reverse() {
     var node = head
     while let currentNode = node {
-        swap(&currentNode.next, &currentNode.previous)
-        head = currentNode
-        node = currentNode.previous
+      node = currentNode.next
+      swap(&currentNode.next, &currentNode.previous)
+      head = currentNode
     }
   }
 }
 
 extension LinkedList {
-  public func map<U>(transform: T -> U) -> LinkedList<U> {
+  public func map<U>(transform: (T) -> U) -> LinkedList<U> {
     let result = LinkedList<U>()
     var node = head
     while node != nil {
@@ -177,7 +174,7 @@ extension LinkedList {
     return result
   }
   
-  public func filter(predicate: T -> Bool) -> LinkedList<T> {
+  public func filter(predicate: (T) -> Bool) -> LinkedList<T> {
     let result = LinkedList<T>()
     var node = head
     while node != nil {
@@ -187,5 +184,15 @@ extension LinkedList {
       node = node!.next
     }
     return result
+  }
+}
+
+extension LinkedList {
+  convenience init(array: Array<T>) {
+    self.init()
+        
+    for element in array {
+      self.append(element)
+    }
   }
 }
